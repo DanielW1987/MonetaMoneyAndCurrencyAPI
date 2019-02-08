@@ -7,7 +7,6 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import javax.money.convert.*;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -44,7 +43,9 @@ class ConversionTest {
 
         assertEquals(EUR, exchangeRate.getBaseCurrency());
         assertEquals(USD, exchangeRate.getCurrency());
-        assertEquals("1.1471", exchangeRate.getFactor().toString()); // zum Zeitpunkt der Testerstellung
+
+        // zum Zeitpunkt der Testerstellung korrekt, heute wahrscheinlich nicht mehr
+        assertEquals("1.1471", exchangeRate.getFactor().toString());
     }
 
     @Test
@@ -52,7 +53,7 @@ class ConversionTest {
         // benutzt intern die Default-Provider-Chain
         CurrencyConversion conversion = MonetaryConversions.getConversion(USD);
 
-        // 100 EUR x 1.1471 = USD 114.710177 (zum Zeitpunkt der Testerstellung)
+        // 100 EUR x 1.1471 = USD 114.710177 (zum Zeitpunkt der Testerstellung korrekt, heute wahrscheinlich nicht mehr)
         assertEquals("USD 114.710177", ONE_HUNDRED_EUR.with(conversion).toString());
         assertEquals("1.14710176811811755324961691331997", conversion.getExchangeRate(ONE_HUNDRED_EUR).getFactor().toString());
     }
@@ -62,25 +63,27 @@ class ConversionTest {
         ExchangeRateProvider exchangeRateProvider = MonetaryConversions.getExchangeRateProvider(IMF);
         CurrencyConversion   conversion           = exchangeRateProvider.getCurrencyConversion(USD);
 
-        // 100 COP x 0.00032 = USD 0.032095 (zum Zeitpunkt der Testerstellung)
+        // 100 COP x 0.00032 = USD 0.032095 (zum Zeitpunkt der Testerstellung korrekt, heute wahrscheinlich nicht mehr)
         assertEquals("USD 0.032095", ONE_HUNDRED_COP.with(conversion).toString());
         assertEquals("0.00032095481873513296175545042871436", conversion.getExchangeRate(ONE_HUNDRED_COP).getFactor().toString());
     }
 
     @Test
     void convert_with_historical_exchange_rate() {
-        LocalDate       historicalDate = LocalDate.of(2011, 1, 1);
-        ConversionQuery query          = ConversionQueryBuilder.of()
-                                                               .setBaseCurrency(EUR)
-                                                               .setTermCurrency(USD)
-                                                               .set(LocalDate.class, historicalDate)
-                                                               .build();
+        LocalDate historicalDate = LocalDate.of(2018, 12, 31);
+        ConversionQuery query    = ConversionQueryBuilder.of()
+                                                         .setBaseCurrency(EUR)
+                                                         .setTermCurrency(USD)
+                                                         .setRateTypes(RateType.HISTORIC)
+                                                         .setProviderName(ECB_HIST)
+                                                         .set(LocalDate.class, historicalDate)
+                                                         .build();
 
         CurrencyConversion conversion = MonetaryConversions.getConversion(query);
 
         // 100 EUR x 1.1471 = USD 114.710177
         assertEquals("USD 114.710177", ONE_HUNDRED_EUR.with(conversion).toString());
         assertEquals("1.14710176811811755324961691331997", conversion.getExchangeRate(ONE_HUNDRED_EUR).getFactor().toString());
-        
     }
+
 }

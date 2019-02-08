@@ -91,6 +91,7 @@ class MonetaryFunctionsTest {
         amounts.add(Money.of(7.5, EUR));
         amounts.add(Money.of(12, EUR));
 
+        // Wichtig: Währung muss für alle Beträge identisch sein, ansonsten javax.money.MonetaryException: Currency mismatch: [???]/EUR
         Optional<MonetaryAmount> min = amounts.stream().reduce(MonetaryFunctions.min()); // "EUR 7.5"
         Optional<MonetaryAmount> max = amounts.stream().reduce(MonetaryFunctions.max()); // "EUR 12"
         Optional<MonetaryAmount> sum = amounts.stream().reduce(MonetaryFunctions.sum()); // "EUR 29.5"
@@ -101,7 +102,7 @@ class MonetaryFunctionsTest {
     }
 
     @Test
-    void test_summarizing() {
+    void test_summary_statistics() {
         Map<CurrencyUnit, MonetarySummaryStatistics> summary = amounts.stream().collect(MonetaryFunctions.groupBySummarizingMonetary()).get();
 
         assertEquals(3, summary.get(USD).getCount());

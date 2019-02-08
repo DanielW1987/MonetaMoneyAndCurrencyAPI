@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.money.*;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MonetaryAmountTest {
@@ -18,11 +20,11 @@ class MonetaryAmountTest {
         // Default factory
         MonetaryAmount monetaryAmount = Monetary.getDefaultAmountFactory()
                                                 .setCurrency(EUR)
-                                                .setNumber(200.12)
-                                                .setContext(MonetaryContextBuilder.of().setMaxScale(2).build())
+                                                .setNumber(new BigDecimal("200.12"))
+                                                .setContext(MonetaryContextBuilder.of().setMaxScale(3).build())
                                                 .create();
 
-        assertEquals("EUR 200.12", monetaryAmount.toString());
+        assertEquals("EUR 200.120", monetaryAmount.toString());
         assertTrue(monetaryAmount instanceof Money);
 
         // Explizite factory
@@ -92,10 +94,6 @@ class MonetaryAmountTest {
         assertFalse(a.isGreaterThanOrEqualTo(b));
         assertTrue(a.isLessThan(b));
         assertTrue(a.isLessThanOrEqualTo(b));
-
-        // compare with any number if type is FastMoney
-        assertTrue(((FastMoney) a).isLessThanOrEqualTo(100));
-        assertTrue(((FastMoney) a).isGreaterThanOrEqualTo(100));
     }
 
     @Test

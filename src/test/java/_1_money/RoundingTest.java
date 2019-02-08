@@ -21,10 +21,11 @@ class RoundingTest {
         MonetaryAmount a      = FastMoney.of(100, EUR);
         MonetaryAmount result = a.divide(3);
 
-        // standardmäßig immer 5 Nachkommastellen bei FastMoney
+        // Ergebnis ohne Rundung; Standardmäßig immer 5 Nachkommastellen bei FastMoney
         assertEquals(FastMoney.of(33.33333, EUR), result);
 
-        // DefaultRounding rundet anhand der DefaultFractionDigits der Währung
+        // DefaultRounding kann einfach auf den MonetaryAmount angewendet werden
+        // DefaultRounding: Entsprechend der DefaultFractionalDigits der Währung
         assertEquals(FastMoney.of(33.33, EUR), result.with(Monetary.getDefaultRounding()));
     }
 

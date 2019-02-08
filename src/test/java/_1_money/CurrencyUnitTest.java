@@ -22,15 +22,6 @@ class CurrencyUnitTest {
     }
 
     @Test
-    void create_currency_via_string_currency_code() {
-        CurrencyUnit euro = Monetary.getCurrency("JPY");
-
-        assertEquals("JPY", euro.getCurrencyCode());
-        assertEquals(0, euro.getDefaultFractionDigits());
-        assertEquals(392, euro.getNumericCode()); // ISO numeric code
-    }
-
-    @Test
     void create_currency_via_custom_locale() {
         CurrencyUnit euro = Monetary.getCurrency(new Locale("es", "CO"));
 
@@ -40,10 +31,19 @@ class CurrencyUnitTest {
     }
 
     @Test
+    void create_currency_via_string_currency_code() {
+        CurrencyUnit euro = Monetary.getCurrency("JPY");
+
+        assertEquals("JPY", euro.getCurrencyCode());
+        assertEquals(0, euro.getDefaultFractionDigits());
+        assertEquals(392, euro.getNumericCode()); // ISO numeric code
+    }
+
+    @Test
     void create_custom_currency() {
         CurrencyUnit BTC = CurrencyUnitBuilder.of("BTC", "default")
-                                                .setDefaultFractionDigits(3)
-                                                .build();
+                                              .setDefaultFractionDigits(3)
+                                              .build();
 
         assertEquals("BTC", BTC.getCurrencyCode());
         assertEquals(3, BTC.getDefaultFractionDigits());
